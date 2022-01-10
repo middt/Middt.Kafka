@@ -1,0 +1,6 @@
+broker
+kafka-console-consumer  --bootstrap-server localhost:9092 --topic producer_logs --from-beginning --max-messages 10
+
+
+ksqlDB
+show topics;
