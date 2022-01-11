@@ -18,7 +18,7 @@ namespace Middt.Kafka.Common
         {
             _host = "localhost";
             _port = 9092;
-            _topic = "producer_logs";
+            _topic = "midd_topic";
         }
 
         ProducerConfig GetProducerConfig()

@@ -13,68 +13,48 @@ var config = new ProducerConfig
 var producer = new Producer<TemperatureModel>();
 TemperatureModel model;
 
-foreach (DateTime date in EachDay(DateTime.Today, DateTime.Today.AddDays(60)))
-{
-    model = Generate(date);
-    await producer.ProduceAsync(model);
+//foreach (DateTime date in EachDay(DateTime.Today, DateTime.Today.AddDays(60)))
+//{
+//    model = Generate(date.);
+//    await producer.ProduceAsync(model);
 
-    await Task.Delay(1000);
+//    await Task.Delay(1000);
+//}
+
+int startIndex = 0;
+int endIndex = 0;
+while (true)
+{
+    endIndex = startIndex + 100;
+
+    for (int i = startIndex; i < endIndex; i++)
+    {
+        model = Generate(i);
+        await producer.ProduceAsync(model);
+
+        await Task.Delay(1000);
+    }
+
+    Console.WriteLine("Publish Success!");
+
+    startIndex = endIndex;
 }
 
 
-Console.WriteLine("Publish Success!");
-
-
-
-//using (var p = new ProducerBuilder<Null, TemperatureModel>(config)
-//    .SetValueSerializer(new MiddtKafkaSerializer<TemperatureModel>()).Build())
-//{
-//    while (true)
-//    {
-//        Console.WriteLine("Please press enter to send a message");
-//        Console.ReadLine();
-
-//        TemperatureModel model;
-//        foreach (DateTime date in EachDay(DateTime.Today, DateTime.Today.AddDays(60)))
-//        {
-//            try
-//            {
-//                model = Generate(date);
-//                var t = p.ProduceAsync(Settings.Topic, new Message<Null, TemperatureModel>  {  Value = model });
-//                t.ContinueWith(task =>
-//                {
-//                    if (task.IsFaulted)
-//                    {
-//                        Console.WriteLine($"Delivery failed");
-//                    }
-//                    else
-//                    {
-//                        Console.WriteLine($"Delivered '{task.Result.Value}' to '{task.Result.TopicPartitionOffset}'");
-//                    }
-//                });
-//            }
-//            catch (ProduceException<Null, string> e)
-//            {
-//                Console.WriteLine($"Delivery failed: {e.Error.Reason}");
-//            }
-//        }
-//    }
-//}
-
-TemperatureModel Generate(DateTime date)
+TemperatureModel Generate(int index)
 {
     TemperatureModel model = new TemperatureModel();
-    model.Date = date;
+    model.Index = index;
     model.HighTemp = new Random().Next(40, 50);
     model.LowTemp = new Random().Next(10, 20);
     model.Mean = (model.HighTemp + model.LowTemp) / 2;
 
     return model;
 }
-IEnumerable<DateTime> EachDay(DateTime from, DateTime thru)
-{
-    for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
-        yield return day;
-}
+//IEnumerable<DateTime> EachDay(DateTime from, DateTime thru)
+//{
+//    for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
+//        yield return day;
+//}
 
 Console.ReadLine();

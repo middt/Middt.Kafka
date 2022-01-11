@@ -19,7 +19,8 @@ namespace Middt.Kafka.Common
         {
             _host = "localhost";
             _port = 9092;
-            _topic = "producer_logs";
+             // _topic = "midd_topic";
+             _topic = "midd_topic_target";
         }
 
         ConsumerConfig GetConsumerConfig()
@@ -28,12 +29,17 @@ namespace Middt.Kafka.Common
             {
                 BootstrapServers = $"{_host}:{_port}",
                 GroupId = "foo",
-                AutoOffsetReset = AutoOffsetReset.Earliest
+                AutoOffsetReset = AutoOffsetReset.Latest
+                
+                
             };
         }
 
         public async Task ConsumeAsync()
         {
+
+
+
             using (var consumer = new ConsumerBuilder<Null, T>(GetConsumerConfig())
                 .SetValueDeserializer(new JsonValueDeserializer<T>())
                 .Build())
@@ -41,6 +47,7 @@ namespace Middt.Kafka.Common
                 consumer.Subscribe(_topic);
 
                 Console.WriteLine($"Subscribed to {_topic}");
+
 
                 await Task.Run(() =>
                 {

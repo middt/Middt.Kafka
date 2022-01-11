@@ -7,8 +7,8 @@ namespace Middt.Kafka.Common
     [Serializable]
     public record TemperatureModel
     { 
-        public DateTime Date { get; set; }
-
+        // public DateTime Date { get; set; }
+        public int Index { get; set; }
         public double HighTemp { get; set; }
 
         public double LowTemp { get; set; }
@@ -18,10 +18,7 @@ namespace Middt.Kafka.Common
 
         public override string ToString()
         {
-            return $"Date: {Date} Temp: {LowTemp}-{HighTemp} Mean: {Mean}";
+            return $"Index: {Index} Temp: {LowTemp}-{HighTemp} Mean: {Mean}";
         }
     }
-
-
-
 }

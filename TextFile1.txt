@@ -3,4 +3,29 @@ kafka-console-consumer  --bootstrap-server localhost:9092 --topic producer_logs 
 
 
 ksqlDB
+SHOW STREAMS;
 show topics;
+producer_logs
+
+{"Date":"2022-01-05T00:00:00+03:00","HighTemp":48,"LowTemp":11,"Mean":29.5}
+
+CREATE STREAM middt_topic_stream
+ (Index INTEGER,
+ HighTemp DOUBLE,
+ LowTemp DOUBLE,
+ Mean DOUBLE)
+ WITH (KAFKA_TOPIC='midd_topic',
+ VALUE_FORMAT='JSON');
+
+
+CREATE STREAM middt_topic_stream_target WITH (KAFKA_TOPIC='midd_topic_target',
+ VALUE_FORMAT='JSON') AS
+  SELECT * FROM middt_topic_stream WHERE Mean>30;
+
+  SELECT * FROM middt_topic_stream_target EMIT CHANGES;
+
+DROP STREAM middt_topic_stream_target
+
+
+kafka-console-consumer  --bootstrap-server localhost:9092 --topic midd_topic_target --from-beginning --max-messages 10
+
